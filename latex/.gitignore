@@ -1,0 +1,10 @@
+_minted-main
+*.aux
+*.dvi
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.fls
+*.fdb_latexmk
+# *.pdf
