@@ -65,9 +65,8 @@ void printArray(int arr[], int size)
     printf("\n");
 }
 
-void generate_random_data() 
+void generate_random_data(int size) 
 {
-    int size = 50;
     // Seed the random number generator
     srand(time(NULL));
 
@@ -94,6 +93,20 @@ void generate_random_data()
 
     // Close the file
     fclose(outFile);
+}
 
-    printf("Numbers have been written to dane.txt.\n");
+void reverse_array(int arr[], int size) {
+    int start = 0;
+    int end = size - 1;
+    
+    while (start < end) {
+        // Swap elements at start and end indices
+        int temp = arr[start];
+        arr[start] = arr[end];
+        arr[end] = temp;
+        
+        // Move towards the middle of the array
+        start++;
+        end--;
+    }
 }

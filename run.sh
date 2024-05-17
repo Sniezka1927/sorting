@@ -1,2 +1,2 @@
 g++ -o app src/*.cpp
-./app
+time ./app
