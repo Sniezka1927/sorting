@@ -15,7 +15,7 @@
 \usepackage{multirow}
 
 % SETUP
-\title{Projekt 1 - sortowanie}
+\title{Projekt 2 - sortowanie}
 \author{Aleksander Dygon - 151856}
 \date{}
 
@@ -156,26 +156,86 @@ Celem tego projektu jest implementacja, przetestowanie i porównanie różnych m
 \section*{Testy sortowania}
 Sortowanie będzie testowane na trzech rodzajach danych wejściowych:
 \begin{enumerate}
-    \item Test1 - Dla danych wygenerowanych losowo
-    \item Test2 - Dla danych posortowanych w kolejności odwrotnej (malejąco)
-    \item Test3 - Dla danych posortowanych właściwie (rosnąco)
+    \item Dla danych wygenerowanych losowo
+    \item Dla danych posortowanych w kolejności odwrotnej (malejąco)
+    \item Dla danych posortowanych właściwie (rosnąco)
 \end{enumerate}
 
-\section*{Analiza wyników}
-Analiza wyników będzie zawierać wykresy zależności czasu sortowania od rozmiaru tablicy dla każdego rodzaju testu oraz dla obu grup metod sortowania. Ostatecznie uzyskamy 9 wykresów: po 3 dla każdego zestawu danych.
+\subsection*{Dane wygenerowane losowo}
+Wykres metod z grupy pierwszej:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{"../assets/1_1.png"}
+    \label{fig:1_1}
+\end{figure}
 
-\subsection*{Wykresy zależności czasu sortowania od rozmiaru tablicy}
-\begin{itemize}
-    \item Jeden wykres zbiorczy dla 3 metod podstawowych
-    \item Jeden wykres zbiorczy dla II grupy metod
-    \item Jeden wykres porównujący wszystkie metody I i II grupy
-\end{itemize}
 
-\section*{Badanie czasów}
-Do badania czasów sortowania zostanie wykorzystana funkcja systemowa, np. \texttt{time} lub \texttt{gettimeofday}. Czas sortowania będzie mierzony przed i po wykonaniu sortowania, a różnica tych czasów zostanie uwzględniona jako czas sortowania.
+Wykres metod z grupy drugiej:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{"../assets/1_2.png"}
+    \label{fig:1_2}
+\end{figure}
 
-\section*{Maksymalny rozmiar tablicy}
-Maksymalny rozmiar tablicy oraz długość listy zostanie dobrany tak, aby czas sortowania nie przekroczył 15 minut. Program będzie pytał użytkownika o rozmiar tablicy do sortowania.
+Wspólny wykres
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{"../assets/1_3.png"}
+    \label{fig:1_3}
+\end{figure}
+\subsection*{Dla danych posortowanych w kolejności odwrotnej (malejąco)}
+Wykres metod z grupy pierwszej:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{"../assets/2_1.png"}
+    \label{fig:2_1}
+\end{figure}
+
+
+Wykres metod z grupy drugiej:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{"../assets/2_2.png"}
+    \label{fig:2_2}
+\end{figure}
+
+Wspólny wykres
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{"../assets/2_3.png"}
+    \label{fig:2_3}
+\end{figure}
+\subsection*{Dla danych posortowanych właściwie (rosnąco)}
+Wykres metod z grupy pierwszej:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{"../assets/3_1.png"}
+    \label{fig:3_1}
+\end{figure}
+
+
+Wykres metod z grupy drugiej:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{"../assets/3_2.png"}
+    \label{fig:3_2}
+\end{figure}
+
+Wspólny wykres
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{"../assets/3_3.png"}
+    \label{fig:3_3}
+\end{figure}
+
+
+\section*{Podsumowanie}
+
+
+Algorytmy o złożoności $O(n^2)$ (INSERT, SELECTION, BUBBLE) są wyraźnie nieefektywne dla dużych zbiorów danych, co widać po gwałtownym wzroście czasu wykonania. \newline
+Quick Sort i Heap Sort są najbardziej efektywnymi algorytmami w analizie, szczególnie przy dużych zbiorach danych. \newline
+Shell Sort oferuje dobrą wydajność i może być preferowanym wyborem w przypadkach, gdzie stabilność czasu wykonania jest istotna, choć nie dorównuje efektywnością Quick Sort i Heap Sort. \newline
+Bubble Sort należy unikać w przypadku jakichkolwiek większych zbiorów danych z uwagi na ekstremalnie wysokie czasy wykonania. \newline
 
 
 \end{document}

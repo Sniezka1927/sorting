@@ -13,7 +13,7 @@ int main() {
     int sizes[] = {100,  500, 1000, 10000, 20000, 50000, 100000};
 
     int special = 1;
-    int ascending = 1;
+    int ascending = 0;
 
     // 1 & 1 => data sorted ascending - TEST 3
     // 1 & 0 => data sorted descending - TEST 2
