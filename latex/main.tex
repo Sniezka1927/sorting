@@ -196,6 +196,7 @@ Podane testy zostały wygenerowane dla losowo wybranych danych z przedziału [0,
     \includegraphics[width=\textwidth]{"../assets/4_4.png"}
     \caption{"Middle" oznacza element znajdujący się w zakresie od 10 procent do 40 procent wysokości drzewa. }
     \label{fig:4_4}
+<<<<<<< HEAD
 \end{figure}
 
 \begin{figure}[H]
@@ -210,18 +211,43 @@ Podane testy zostały wygenerowane dla losowo wybranych danych z przedziału [0,
 
 \begin{figure}[H]
     \centering
+=======
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{"../assets/4_5.png"}
+    \caption{"Lower" oznacza element znajdujący się w dolnych 10 procent wysokości drzewa.}
+    \label{fig:4_5}
+
+\end{figure}
+
+\subsection*{Wykres zbiorczy}
+
+\begin{figure}[H]
+    \centering
+>>>>>>> edaf1ac265c9c1114b3975dc4f317bb440d63391
     \includegraphics[width=\textwidth]{"../assets/4_9.png"}    
     \label{fig:4_9}
 
 \end{figure}
 
-Wspólny wykres
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{"../assets/3_3.png"}
-    \label{fig:3_3}
-\end{figure}
+\subsection*{Wyniki przeprowadzonych testów}
 
+\begin{table}[H]
+    \begin{tabular}{|l|r|r|r|r|r|r|r|}
+    \hline
+    {[}ms{]}      & 100 & 500 & 1000 & 10000 & 100000 & 500000 & 1000000 \\ \hline
+    ADD           & 7   & 44  & 91   & 1284  & 26117  & 222522 & 598058  \\ \hline
+    ADD N + 1     & 1   & 1   & 2    & 2     & 2      & 2      & 3       \\ \hline
+    FIND UPPER    & 1   & 2   & 1    & 1     & 1      & 3      & 1       \\ \hline
+    FIND MIDDLE   & 2   & 1   & 1    & 1     & 1      & 2      & 1       \\ \hline
+    FIND LOWER    & 2   & 2   & 1    & 1     & 2      & 2      & 2       \\ \hline
+    DELETE LOWER  & 1   & 2   & 0    & 2     & 2      & 1      & 3       \\ \hline
+    DELETE MIDDLE & 1   & 1   & 1    & 2     & 1      & 2      & 2       \\ \hline
+    DELETE ROOT   & 1   & 1   & 1    & 1     & 2      & 2      & 1       \\ \hline
+    \end{tabular}
+    \end{table}
 
 \section*{Podsumowanie}
 Na podstawie przeprowadzonych testów oraz ich wyników widzimy wydajność drzewa BST po przeprowadzeniu konkretnych operacji względem tego ile jest zawartych w nim elementów, Wyniki testów wydajnościowych potwierdzają, że drzewo BST jest skuteczną strukturą danych do przechowywania i manipulowania zbiorem danych. Czas operacji dodawania wielu elementów gwałtownie wzrasta, w zależości od ich liczby. W przypadku dodawania, wyszukiwania czy też usuwania pojedyńczego elementu czas ten nie przekracza 3[ms] co pokazuje jak bardzo drzewo BST jest efektywne w tego typu zabiegach. 
