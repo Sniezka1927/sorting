@@ -13,10 +13,19 @@
 \usepackage[utf8]{inputenc}
 \usepackage{array}
 \usepackage{multirow}
+\usepackage{tikz}
+\usepackage{forest}
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{graphicx}
+
+
 
 % SETUP
-\title{Projekt 2 - sortowanie}
-\author{Aleksander Dygon - 151856}
+\title{Projekt 3 - Operacje na drzewie BST}
+\author{Aleksander Dygon - 151856, Wiktor Ząbek - 151947}
 \date{}
 
 % table of contents links
@@ -43,299 +52,189 @@
 
 \maketitle
 
-\section*{Wstęp}
-Celem tego projektu jest implementacja, przetestowanie i porównanie różnych metod sortowania tablic. W ramach projektu zostaną zbadane dwie grupy metod sortowania: I grupa metod - metody podstawowe (przez wstawianie, przez selekcję, sortowanie bąbelkowe) oraz II grupa metod - bardziej zaawansowane techniki sortowania (Quicksort, Sortowanie Shella, Sortowanie przez kopcowanie). Testy zostaną przeprowadzone na tablicach zawierających liczby całkowite z przedziału od -100 do 100.
+\section*{Wprowadzenie}
+Celem tego projektu jest implementacja kodu poszukiwań drzewa binarnego. Binarny Search Tree to dynamiczna struktura danych; dzieli się na korzeń, gałęzie i liście - każdy podział nazywamy węzłem. Węzły mają swoją wartość klucza, to na jego podstawie określane jest gdzie dany element ma trafić; przechowują także wskaźniki na swoich "synów" (lewego i prawego) oraz na swojego "ojca".
 
-\section*{Metody sortowania}
-\subsection*{I grupa metod}
-\begin{itemize}
-    \item Przez wstawianie\\
-    \textbf{Pseudokod:}
-    \begin{verbatim}
-    INSERTION-SORT(A)
-        for j = 2 to A.length
-            key = A[j]
-            i = j - 1
-            while i > 0 and A[i] > key
-                A[i + 1] = A[i]
-                i = i - 1
-            A[i + 1] = key
-    \end{verbatim}
-    
-    \item Przez selekcję\\
-    \textbf{Pseudokod:}
-    \begin{verbatim}
-    SELECTION-SORT(A)
-        for i = 1 to A.length - 1
-            minIndex = i
-            for j = i + 1 to A.length
-                if A[j] < A[minIndex]
-                    minIndex = j
-            swap A[i] with A[minIndex]
-    \end{verbatim}
-    
-    \item Sortowanie bąbelkowe\\
-    \textbf{Pseudokod:}
-    \begin{verbatim}
-    BUBBLE-SORT(A)
-        for i = 1 to A.length - 1
-            for j = A.length downto i + 1
-                if A[j] < A[j - 1]
-                    swap A[j] with A[j - 1]
-    \end{verbatim}
-\end{itemize}
+Węzły posiadają dwa poddrzewa:
 
-\subsection*{II grupa metod}
-\begin{itemize}
-    \item Quicksort\\
-    \textbf{Pseudokod:}
-    \begin{verbatim}
-    QUICKSORT(A, p, r)
-        if p < r
-            q = PARTITION(A, p, r)
-            QUICKSORT(A, p, q - 1)
-            QUICKSORT(A, q + 1, r)
-    
-    PARTITION(A, p, r)
-        x = A[r]
-        i = p - 1
-        for j = p to r - 1
-            if A[j] <= x
-                i = i + 1
-                swap A[i] with A[j]
-        swap A[i + 1] with A[r]
-        return i + 1
-    \end{verbatim}
-    
-    \item Sortowanie Shella\\
-    \textbf{Pseudokod:}
-    \begin{verbatim}
-    SHELL-SORT(A)
-        n = A.length
-        gap = n / 2
-        while gap > 0
-            for i = gap to n - 1
-                temp = A[i]
-                j = i
-                while j >= gap and A[j - gap] > temp
-                    A[j] = A[j - gap]
-                    j = j - gap
-                A[j] = temp
-            gap = gap / 2
-    \end{verbatim}
-    
-    \item Sortowanie przez kopcowanie\\
-    \textbf{Pseudokod:}
-    \begin{verbatim}
-    HEAPSORT(A)
-        BUILD-MAX-HEAP(A)
-        for i = A.length downto 2
-            swap A[1] with A[i]
-            A.heapSize = A.heapSize - 1
-            MAX-HEAPIFY(A, 1)
-    
-    BUILD-MAX-HEAP(A)
-        A.heapSize = A.length
-        for i = floor(A.length / 2) downto 1
-            MAX-HEAPIFY(A, i)
-    
-    MAX-HEAPIFY(A, i)
-        left = 2i
-        right = 2i + 1
-        if left <= A.heapSize and A[left] > A[i]
-            largest = left
-        else largest = i
-        if right <= A.heapSize and A[right] > A[largest]
-            largest = right
-        if largest != i
-            swap A[i] with A[largest]
-            MAX-HEAPIFY(A, largest)
-    \end{verbatim}
-\end{itemize}
+- lewe, które zawiera jedynie elementy o mniejszym kluczu niż klucz węzła
 
-\section*{Testy sortowania}
-Sortowanie będzie testowane na trzech rodzajach danych wejściowych:
-\begin{enumerate}
-    \item Dla danych wygenerowanych losowo
-    \item Dla danych posortowanych w kolejności odwrotnej (malejąco)
-    \item Dla danych posortowanych właściwie (rosnąco)
-\end{enumerate}
+- prawe, w którym znajdują się elementy o kluczach nie mniejszych  niż klucz węzła
+\\
+Drzewa binarne mają trzy podstawowe sposoby przeglądania: 
 
-\subsection*{Dane wygenerowane losowo}
-Wykres metod z grupy pierwszej:
+- preorder (wzdłużne)
+
+- postorder (poprzeczne)
+
+- inorder (poprzeczne) \\
+\\
+\\
+\begin{table}[htbp]
+\centering
+\begin{tabular}{|>{\centering\arraybackslash}m{0.4\textwidth}|>{\centering\arraybackslash}m{0.7\textwidth}|}
+\hline
+\href{https://i.imgur.com/HIlcnIh.png}{\includegraphics[width=0.4\textwidth]{../assets/5_3.png}} & PreOrder: A B D H I E J C F K G \\
+\hline
+\href{https://i.imgur.com/ZXdwmZn.png}{\includegraphics[width=0.4\textwidth]{../assets/5_1.png}} & PostOrder: H I D J E B K F G C A \\
+\hline
+\href{https://i.imgur.com/zMCdQRN.png}{\includegraphics[width=0.4\textwidth]{../assets/5_2.png}} & InOrder: H D I B J E A K F C G \\
+\hline
+\end{tabular}
+\end{table}
+
+\section*{Wizualizacja operacjii}
+
+\subsection*{Dodawanie}
+
+
+\begin{tabular}{|>{\centering\arraybackslash}m{0.3\textwidth}|>{\centering\arraybackslash}m{0.7\textwidth}|}
+    \hline
+    \textbf{Stan} & \textbf{Opis} \\
+    \hline
+    \href{https://i.imgur.com/tZArpvb.png}{\includegraphics[width=0.2\textwidth]{"../assets/3_1.png"}} & Dodanie elementu o kluczu 4 jako korzenia drzewa.   \\
+    \hline
+    \href{https://i.imgur.com/tZArpvb.png}{\includegraphics[width=0.2\textwidth]{"../assets/3_2.png"}} & Dodanie elementu o kluczu 2. Ponieważ 2 jest mniejsze niż 4, element zostaje umieszczony w lewym poddrzewie korzenia.    \\
+    \hline
+    \href{https://i.imgur.com/48XNmMa.png}{\includegraphics[width=0.2\textwidth]{"../assets/3_3.png"}} & Dodanie elementu o kluczu 1. Ponieważ 1 jest mniejsze niż 4 oraz mniejsze niż 2, element zostaje umieszczony w lewym poddrzewie węzła 2. \\
+    \hline
+    \href{https://i.imgur.com/c4sM6BP.png}{\includegraphics[width=0.2\textwidth]{"../assets/3_4.png"}} & Dodanie elementu o kluczu 3. Ponieważ 3 jest mniejsze niż 4, ale większe lub równe 2, element zostaje umieszczony w lewym poddrzewie korzenia i w prawym poddrzewie węzła 2. \\
+    \hline
+    \href{https://i.imgur.com/aRC3aUB.png}{\includegraphics[width=0.2\textwidth]{"../assets/3_5.png"}} & Dodanie elementu o kluczu 5. Ponieważ 5 jest większe lub równe 4, element zostaje umieszczony w prawym poddrzewie korzenia. \\
+    \hline
+    \end{tabular}
+
+\subsection*{Usuwanie}
+Węzły usuwamy z drzewa BST, tak aby została zachowana hierarchia powiązań węzłów. Musimy rozpatrzyć kilka przypadków.
+
+\begin{tabular}{|>{\centering\arraybackslash}m{0.3\textwidth}|>{\centering\arraybackslash}m{0.7\textwidth}|}
+    \hline
+    \textbf{Stan} & \textbf{Opis} \\
+    \hline
+    \href{https://i.imgur.com/MiukhDU.png}{\includegraphics[width=0.2\textwidth]{"../assets/2_1.png"}} & Usuwany węzeł jest liściem, tzn. nie posiada synów. W takim przypadku po prostu odłączamy go od drzewa i usuwamy.    \\
+    \hline
+    \href{https://i.imgur.com/n1rgQ3G.png}{\includegraphics[width=0.2\textwidth]{"../assets/2_2.png"}} & Usuwany węzeł posiada tylko jednego syna. Węzeł zastępujemy jego synem, po czym węzeł usuwamy z pamięci.    \\
+    \hline
+    \href{https://i.imgur.com/IxPk8qc.png}{\includegraphics[width=0.2\textwidth]{"../assets/2_3.png"}} & Najbardziej skomplikowany jest przypadek trzeci, gdy usuwany węzeł posiada dwóch synów. W takim przypadku znajdujemy węzeł będący następnikiem usuwanego węzła. Przenosimy dane i klucz z następnika do usuwanego węzła, po czym następnik usuwamy z drzewa – do tej operacji można rekurencyjnie wykorzystać tę samą procedurę lub zastąpić następnik przez jego prawego syna (następnik nigdy nie posiada lewego syna). Jako wariant można również zastępować usuwany węzeł jego poprzednikiem. \\
+    \hline
+    \end{tabular}
+
+\subsection*{Przeszukiwanie}
+Drzewa BST pozwalają wyszukiwać zawarte w nich elementy z klasą złożoności obliczeniowej O (log n), gdzie n oznacza liczbę węzłów. Prześledźmy sposób wyszukiwania węzła o kluczu 19 w drzewie BST:
+
+\begin{tabular}{|>{\centering\arraybackslash}m{0.3\textwidth}|>{\centering\arraybackslash}m{0.7\textwidth}|}
+\hline
+\textbf{Stan} & \textbf{Opis} \\
+\hline
+\href{https://i.imgur.com/JAxl8x6.png}{\includegraphics[width=0.2\textwidth]{"../assets/1_1.png"}} & Wyszukiwanie rozpoczynamy od korzenia drzewa. Porównujemy wartość węzła z wartością poszukiwaną. Ponieważ jest ona większa od wartości korzenia, idziemy wzdłuż prawej krawędzi do prawego syna (jeśli węzeł nie miałby prawego syna, to oznaczałoby to, że poszukiwanej wartości nie ma w drzewie BST). \\
+\hline
+\href{https://i.imgur.com/rmndQqe.png}{\includegraphics[width=0.2\textwidth]{"../assets/1_2.png"}} & W węźle 21 ponownie dokonujemy porównania. Ponieważ poszukiwany węzeł jest mniejszy od 21, wybieramy gałąź lewą i przechodzimy do lewego syna 15. \\
+\hline
+\href{https://i.imgur.com/XnmcQai.png}{\includegraphics[width=0.2\textwidth]{"../assets/1_3.png"}} & Porównujemy węzeł 15 z poszukiwanym 19. Ponieważ 19 jest większe, idziemy prawą krawędzią do prawego syna 19. \\
+\hline
+\href{https://i.imgur.com/ngdZBi0.png}{\includegraphics[width=0.2\textwidth]{"../assets/1_4.png"}} & Porównujemy węzeł 19 z poszukiwanym. Są równe. Wyszukiwanie zakończone. \\
+\hline
+\end{tabular}
+
+
+
+\section*{Zlozonosc operacjii}
+
+Podane testy zostały wygenerowane dla losowo wybranych danych z przedziału [0, SIZE]. Czasy przedstawione na wykresach są wyrażone w milisekundach.
+
+\subsection*{Dodawanie N elemtnow}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{"../assets/1_1.png"}
-    \label{fig:1_1}
+    \includegraphics[width=\textwidth]{"../assets/4_1.png"}
+    \label{fig:4_1}
+\end{figure}
+
+\subsection*{Dodawanie N + 1 elementu}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{"../assets/4_2.png"}
+    \label{fig:4_2}
 \end{figure}
 
 
-Wykres metod z grupy drugiej:
+\subsection*{Usuwanie}
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{"../assets/1_2.png"}
-    \label{fig:1_2}
+    \includegraphics[width=\textwidth]{"../assets/4_6.png"}
+    \caption{"Lower" oznacza element znajdujący się w dolnych 10 procent wysokości drzewa.}
+    \label{fig:4_6}
 \end{figure}
 
-Wspólny wykres
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{"../assets/1_3.png"}
-    \label{fig:1_3}
-\end{figure}
-\subsection*{Dla danych posortowanych w kolejności odwrotnej (malejąco)}
-Wykres metod z grupy pierwszej:
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{"../assets/2_1.png"}
-    \label{fig:2_1}
+    \includegraphics[width=\textwidth]{"../assets/4_7.png"}
+    \caption{"Middle" oznacza element znajdujący się w zakresie od 10 procent do 40 procent wysokości drzewa. }
+    \label{fig:4_7}
 \end{figure}
 
-
-Wykres metod z grupy drugiej:
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{"../assets/2_2.png"}
-    \label{fig:2_2}
-\end{figure}
-
-Wspólny wykres
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{"../assets/2_3.png"}
-    \label{fig:2_3}
-\end{figure}
-\subsection*{Dla danych posortowanych właściwie (rosnąco)}
-Wykres metod z grupy pierwszej:
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{"../assets/3_1.png"}
-    \label{fig:3_1}
+    \includegraphics[width=\textwidth]{"../assets/4_8.png"}
+    \label{fig:4_8}
 \end{figure}
 
 
-Wykres metod z grupy drugiej:
+
+\subsection*{Przeszukiwanie}
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{"../assets/3_2.png"}
-    \label{fig:3_2}
+    \includegraphics[width=\textwidth]{"../assets/4_3.png"}
+    \caption{"Upper" oznacza element znajdujący się w zakresie od 40 procent do 100 procent wysokości drzewa.}
+    \label{fig:4_3}
 \end{figure}
 
-Wspólny wykres
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{"../assets/3_3.png"}
-    \label{fig:3_3}
+    \includegraphics[width=\textwidth]{"../assets/4_4.png"}
+    \caption{"Middle" oznacza element znajdujący się w zakresie od 10 procent do 40 procent wysokości drzewa. }
+    \label{fig:4_4}
 \end{figure}
 
-\subsection*{Tabelki Porównawcze}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{"../assets/4_5.png"}
+    \caption{"Lower" oznacza element znajdujący się w dolnych 10 procent wysokości drzewa.}
+    \label{fig:4_5}
 
-Złozonosc obliczenia podanych metod sortowania \newline
+\end{figure}
 
+\subsection*{Wykres zbiorczy}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{"../assets/4_9.png"}    
+    \label{fig:4_9}
+
+\end{figure}
+
+\subsection*{Wyniki przeprowadzonych testów}
 
 \begin{table}[H]
-    \begin{tabular}{lrlllll}
-    n = 1000{[}ns{]} & \multicolumn{1}{l}{Bubble} & Selection                                   & Insertion                                   & Quicksort                                   & Heap                             & Shell                      \\
-    Grupa I          & O(n\textasciicircum{}2)    & \multicolumn{1}{r}{O(n\textasciicircum{}2)} & \multicolumn{1}{r}{O(n\textasciicircum{}2)} & O(nlogn)                                    & O(nlogn) & O(n\textasciicircum{}1.14) \\
-    Grupa II         & O(n\textasciicircum{}2)    & \multicolumn{1}{r}{O(n\textasciicircum{}2)} & \multicolumn{1}{r}{O(n\textasciicircum{}2)} & \multicolumn{1}{r}{O(n\textasciicircum{}2)} & O(nlogn) & O(n\textasciicircum{}1.14) \\
-    Grupa III        & O(n\textasciicircum{}2)    & \multicolumn{1}{r}{O(n)}                    & \multicolumn{1}{r}{O(n)}                                       & \multicolumn{1}{r}{O(n\textasciicircum{}2)} & O(nlogn) & O(n\textasciicircum{}1.14)
+    \begin{tabular}{|l|r|r|r|r|r|r|r|}
+    \hline
+    {[}ms{]}      & 100 & 500 & 1000 & 10000 & 100000 & 500000 & 1000000 \\ \hline
+    ADD           & 7   & 44  & 91   & 1284  & 26117  & 222522 & 598058  \\ \hline
+    ADD N + 1     & 1   & 1   & 2    & 2     & 2      & 2      & 3       \\ \hline
+    FIND UPPER    & 1   & 2   & 1    & 1     & 1      & 3      & 1       \\ \hline
+    FIND MIDDLE   & 2   & 1   & 1    & 1     & 1      & 2      & 1       \\ \hline
+    FIND LOWER    & 2   & 2   & 1    & 1     & 2      & 2      & 2       \\ \hline
+    DELETE LOWER  & 1   & 2   & 0    & 2     & 2      & 1      & 3       \\ \hline
+    DELETE MIDDLE & 1   & 1   & 1    & 2     & 1      & 2      & 2       \\ \hline
+    DELETE ROOT   & 1   & 1   & 1    & 1     & 2      & 2      & 1       \\ \hline
     \end{tabular}
     \end{table}
 
-BUBBLE 
-\begin{table}[H]
-    \begin{tabular}{lrlrlrlrlrlrl}
-                       & \multicolumn{2}{l}{500}         & \multicolumn{2}{l}{1000}        & \multicolumn{2}{l}{10000}                                     & \multicolumn{2}{l}{20000}         & \multicolumn{2}{l}{50000}          & \multicolumn{2}{l}{100000}          \\
-    \multirow{-2}{*}{} & \multicolumn{1}{l}{Exp} & Real  & \multicolumn{1}{l}{Exp} & Real  & \multicolumn{1}{l}{Exp}                             & Real    & \multicolumn{1}{l}{Exp} & Real    & \multicolumn{1}{l}{Exp} & Real     & \multicolumn{1}{l}{Exp} & Real      \\
-    Grupa I            & 0,25                    & 0.432 & 1                       & 1.646 &  100  & 191.672 & 400                     & 895.818 & 2500                    & 6507.360 & 10000                   & 26426.420 \\
-    Grupa II           & 0,25                    & 0.501 & 1                       & 2.218 &  100  & 205.695 & 400                     & 807.169 & 2500                    & 4985.443 & 10000                   & 19911.799 \\
-    Grupa III          & 0,5                     & 0.003 & 0,001                   & 0.003 &  0,01 & 0.022   & 0,02                    & 0.045   & 0,05                    & 0.114    & 0,1                     & 0.223    
-    \end{tabular}
-    \end{table}
-SELECTION
-
-% Please add the following required packages to your document preamble:
-% \usepackage{multirow}
-\begin{table}[H]
-    \begin{tabular}{lrlrlrlrlrlrl}
-    \multirow{2}{*}{} & \multicolumn{2}{l}{500}         & \multicolumn{2}{l}{1000}        & \multicolumn{2}{l}{10000}        & \multicolumn{2}{l}{20000}         & \multicolumn{2}{l}{50000}          & \multicolumn{2}{l}{100000}         \\
-                      & \multicolumn{1}{l}{Exp} & Real  & \multicolumn{1}{l}{Exp} & Real  & \multicolumn{1}{l}{Exp} & Real   & \multicolumn{1}{l}{Exp} & Real    & \multicolumn{1}{l}{Exp} & Real     & \multicolumn{1}{l}{Exp} & Real     \\
-    Grupa I           & 0,25                    & 0.166 & 1                       & 0.873 & 100                     & 66.493 & 400                     & 292.711 & 2500                    & 1640.540 & 10000                   & 8725.437 \\
-    Grupa II          & 0,25                    & 0.198 & 1                       & 0.958 & 100                     & 73.905 & 400                     & 326.040 & 2500                    & 1672.928 & 10000                   & 7869.311 \\
-    Grupa III         & 0,25                    & 0.167 & 1                       & 0.659 & 100                     & 73.139 & 400                     & 294.170 & 2500                    & 1911.621 & 10000                   & 7048.667
-    \end{tabular}
-    \end{table}
-
-INSERTION
-
-% Please add the following required packages to your document preamble:
-% \usepackage{multirow}
-% \usepackage[table,xcdraw]{xcolor}
-% Beamer presentation requires \usepackage{colortbl} instead of \usepackage[table,xcdraw]{xcolor}
-\begin{table}[H]
-    \begin{tabular}{lrlrlrlrlrlrl}
-                       & \multicolumn{2}{l}{500}         & \multicolumn{2}{l}{1000}        & \multicolumn{2}{l}{10000}              & \multicolumn{2}{l}{20000}         & \multicolumn{2}{l}{50000}          & \multicolumn{2}{l}{100000}         \\
-    \multirow{-2}{*}{} & \multicolumn{1}{l}{Exp} & Real  & \multicolumn{1}{l}{Exp} & Real  & \multicolumn{1}{l}{Exp}      & Real    & \multicolumn{1}{l}{Exp} & Real    & \multicolumn{1}{l}{Exp} & Real     & \multicolumn{1}{l}{Exp} & Real     \\
-    Grupa I            & 0,25                    & 0.254 & 1                       & 0.525 & 100  & 91.392  & 400                     & 180.952 & 2500                    & 1199.758 & 10000                   & 4684.442 \\
-    Grupa II           & 0,25                    & 0.501 & 1                       & 0.898 & 100  & 205.695 & 400                     & 381.383 & 2500                    & 24540.28 & 10000                   & 9633.041 \\
-    Grupa III          & 0,5                     & 0.004 & 0,001                   & 0.004 & 0,01 & 0.038   & 0,02                    & 0.059   & 0,05                    & 0.134    & 0,1                     & 0.268   
-    \end{tabular}
-    \end{table}
-
-QUICKSORT
-
-% Please add the following required packages to your document preamble:
-% \usepackage{multirow}
-% \usepackage[table,xcdraw]{xcolor}
-% Beamer presentation requires \usepackage{colortbl} instead of \usepackage[table,xcdraw]{xcolor}
-\begin{table}[H]
-    \begin{tabular}{lrlrlrlrlrlrl}
-                       & \multicolumn{2}{l}{500}         & \multicolumn{2}{l}{1000}        & \multicolumn{2}{l}{10000}            & \multicolumn{2}{l}{20000}         & \multicolumn{2}{l}{50000}          & \multicolumn{2}{l}{100000}         \\
-    \multirow{-2}{*}{} & \multicolumn{1}{l}{Exp} & Real  & \multicolumn{1}{l}{Exp} & Real  & \multicolumn{1}{l}{Exp}     & Real   & \multicolumn{1}{l}{Exp} & Real    & \multicolumn{1}{l}{Exp} & Real     & \multicolumn{1}{l}{Exp} & Real     \\
-    Grupa I            & 0,0013                  & 0.029 & 0,003                   & 0.070 & 0,04                        & 0.981  & 0,0860                  & 2.169   & 0,2349                  & 9.433    & 0,5                     & 31.967   \\
-    Grupa II           & 0,25                    & 0.198 & 1                       & 0.958 & 100 & 73.905 & 400                     & 326.040 & 2500                    & 1672.928 & 10000                   & 7869.311 \\
-    Grupa III          & 0,25                    & 0.167 & 1                       & 0.659 & 100 & 73.139 & 400                     & 294.170 & 2500                    & 1911.621 & 10000                   & 7048.667
-    \end{tabular}
-    \end{table}
-
-HEAP
-
-% Please add the following required packages to your document preamble:
-% \usepackage{multirow}
-% \usepackage[table,xcdraw]{xcolor}
-% Beamer presentation requires \usepackage{colortbl} instead of \usepackage[table,xcdraw]{xcolor}
-\begin{table}[H]
-    \begin{tabular}{lrlrlrlrlrlrl}
-                       & \multicolumn{2}{l}{500}         & \multicolumn{2}{l}{1000}        & \multicolumn{2}{l}{10000}            & \multicolumn{2}{l}{20000}       & \multicolumn{2}{l}{50000}       & \multicolumn{2}{l}{100000}       \\
-    \multirow{-2}{*}{} & \multicolumn{1}{l}{Exp} & Real  & \multicolumn{1}{l}{Exp} & Real  & \multicolumn{1}{l}{Exp}      & Real  & \multicolumn{1}{l}{Exp} & Real  & \multicolumn{1}{l}{Exp} & Real  & \multicolumn{1}{l}{Exp} & Real   \\
-    Grupa I            & 0,0013                  & 0.050 & 0,003                   & 0.110 & 0,04 & 1.797 & 0,0860                  & 3.028 & 0,2349                  & 8.091 & 0,5                     & 16.917 \\
-    Grupa II           & 0,0013                  & 0.046 & 0,003                   & 0.103 & 0,04 & 1.170 & 0,0860                  & 2.461 & 0,2349                  & 6.660 & 0,5                     & 14.030 \\
-    Grupa III          & 0,0013                  & 0.069 & 0,003                   & 0.098 & 0,04 & 1.144 & 0,0860                  & 2.359 & 0,2349                  & 6.387 & 0,5                     & 13.261
-    \end{tabular}
-    \end{table}
-
-SHELL
-
-% Please add the following required packages to your document preamble:
-% \usepackage{multirow}
-% \usepackage[table,xcdraw]{xcolor}
-% Beamer presentation requires \usepackage{colortbl} instead of \usepackage[table,xcdraw]{xcolor}
-\begin{table}[H]
-    \begin{tabular}{lrlrlrlrlrlrl}
-                       & \multicolumn{2}{l}{500}         & \multicolumn{2}{l}{1000}        & \multicolumn{2}{l}{10000}              & \multicolumn{2}{l}{20000}       & \multicolumn{2}{l}{50000}       & \multicolumn{2}{l}{100000}       \\
-    \multirow{-2}{*}{} & \multicolumn{1}{l}{Exp} & Real  & \multicolumn{1}{l}{Exp} & Real  & \multicolumn{1}{l}{Exp}        & Real  & \multicolumn{1}{l}{Exp} & Real  & \multicolumn{1}{l}{Exp} & Real  & \multicolumn{1}{l}{Exp} & Real   \\
-    Grupa I            & 0,0012                  & 0.038 & 0,0026                  & 0.083 & 0,0363 & 1.292 & 0,0800                  & 2.322 & 0,2274                  & 6.168 & 0,5012                  & 12.660 \\
-    Grupa II           & 0,0012                  & 0.019 & 0,0026                  & 0.038 & 0,0363 & 0.471 & 0,0800                  & 1.118 & 0,2274                  & 2.472 & 0,5012                  & 5.127  \\
-    Grupa III          & 0,0012                  & 0.012 & 0,0026                  & 0.024 & 0,0363 & 0.340 & 0,0800                  & 0.731 & 0,2274                  & 2.095 & 0,5012                  & 4.215 
-    \end{tabular}
-    \end{table}
 \section*{Podsumowanie}
+Na podstawie przeprowadzonych testów oraz ich wyników widzimy wydajność drzewa BST po przeprowadzeniu konkretnych operacji względem tego ile jest zawartych w nim elementów, Wyniki testów wydajnościowych potwierdzają, że drzewo BST jest skuteczną strukturą danych do przechowywania i manipulowania zbiorem danych. Czas operacji dodawania wielu elementów gwałtownie wzrasta, w zależości od ich liczby. W przypadku dodawania, wyszukiwania czy też usuwania pojedyńczego elementu czas ten nie przekracza 3[ms] co pokazuje jak bardzo drzewo BST jest efektywne w tego typu zabiegach. 
 
-
-Algorytmy o złożoności $O(n^2)$ (INSERT, SELECTION, BUBBLE) są wyraźnie nieefektywne dla dużych zbiorów danych, co widać po gwałtownym wzroście czasu wykonania. \newline
-Quick Sort i Heap Sort są najbardziej efektywnymi algorytmami w analizie, szczególnie przy dużych zbiorach danych. \newline
-Shell Sort oferuje dobrą wydajność i może być preferowanym wyborem w przypadkach, gdzie stabilność czasu wykonania jest istotna, choć nie dorównuje efektywnością Quick Sort i Heap Sort. \newline
-Bubble Sort należy unikać w przypadku jakichkolwiek większych zbiorów danych z uwagi na ekstremalnie wysokie czasy wykonania. \newline
 
 
 \end{document}

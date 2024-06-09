@@ -1,112 +1,113 @@
 #include <stdio.h>
-#include <stdlib.h> 
-#include <time.h>  
+#include <stdlib.h>
+#include <time.h>
 #include "../headers/utils.h"
 
-// Function to write data to file
-void write_to_file(int data[], int size) {
+void write_to_file(int data[], int size)
+{
     FILE *file;
     file = fopen("dane.txt", "w");
 
-    if (file != NULL) {
-        for (int i = 0; i < size; i++) {
+    if (file != NULL)
+    {
+        for (int i = 0; i < size; i++)
+        {
             fprintf(file, "%d ", data[i]);
         }
         fclose(file);
-    } else {
+    }
+    else
+    {
         printf("Error opening file for writing.\n");
     }
 }
 
-// Function to read data from file
-int read_from_file(int **data) {
+int read_from_file(int **data)
+{
     FILE *file;
     file = fopen("dane.txt", "r");
 
-    if (file != NULL) {
+    if (file != NULL)
+    {
         int value, count = 0;
-        while (fscanf(file, "%d", &value) != EOF) {
-            count++; // Increment count for each value read
+        while (fscanf(file, "%d", &value) != EOF)
+        {
+            count++;
         }
-        rewind(file); // Reset file pointer to the beginning of the file
+        rewind(file);
 
-        // Allocate memory dynamically for the array
         *data = (int *)malloc(count * sizeof(int));
-        if (*data == NULL) {
+        if (*data == NULL)
+        {
             printf("Error allocating memory.\n");
-            return -1; // Return -1 to indicate memory allocation failure
+            return -1;
         }
 
-        // Read values from file into dynamically allocated array
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++)
+        {
             fscanf(file, "%d", &((*data)[i]));
         }
-        
-        fclose(file);
-        return count; // Return the number of elements read
-    } else {
-        printf("Error opening file for reading.\n");
-        return -1; // Return -1 to indicate file opening failure
-    }
-}
 
-void swap(int *x, int *y)
-{
-    int temp = *x;
-    *x = *y;
-    *y = temp;
+        fclose(file);
+        return count;
+    }
+    else
+    {
+        printf("Error opening file for reading.\n");
+        return -1;
+    }
 }
 
 void printArray(int arr[], int size)
 {
-    int i;
-    for (i = 0; i < size; i++)
+    for (int i = 0; i < size; i++)
         printf("%d ", arr[i]);
     printf("\n");
 }
 
-void generate_random_data(int size) 
+void generate_random_data(int size)
 {
-    // Seed the random number generator
+
     srand(time(NULL));
 
-    // Open the file for writing
+    int *array = (int *)malloc(size * sizeof(int));
+    for (int i = 0; i < size; ++i)
+    {
+        array[i] = i;
+    }
+
+    for (int i = size - 1; i > 0; --i)
+    {
+        int j = rand() % (i + 1);
+        int temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+
     FILE *outFile = fopen("dane.txt", "w");
-    if (outFile == NULL) {
+    if (outFile == NULL)
+    {
         perror("Error opening file for writing");
+        free(array);
         return;
     }
 
-    // Generate and write 1,000 random numbers to the file
-    for (int i = 0; i < size; ++i) {
-        // Generate a random number between -100 and 100
-        int num = rand() % 201 - 100; // rand() % (max - min + 1) + min
+    for (int i = 0; i < size; ++i)
+    {
+        fprintf(outFile, "%d", array[i]);
 
-        // Write the number to the file
-        fprintf(outFile, "%d", num);
-
-        // If it's not the last number, add a space
-        if (i != 999) {
+        if (i != size - 1)
+        {
             fprintf(outFile, " ");
         }
     }
 
-    // Close the file
     fclose(outFile);
+
+    free(array);
 }
 
-void reverse_array(int arr[], int size) {
-    int start = 0;
-    int end = size - 1;
-    
-    while (start < end) {
-        // Swap elements at start and end indices
-        int temp = arr[start];
-        arr[start] = arr[end];
-        arr[end] = temp;
-        
-        // Move towards the middle of the array
-        start++;
-        end--;
-    }
+int generate_random_int(int min, int max)
+{
+    return rand() % (max - min + 1) + min;
 }
